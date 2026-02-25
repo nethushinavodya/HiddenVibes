@@ -1,42 +1,44 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    HIDDENVIBES — Main Stylesheet
    Nature & Travel Theme  ·  Sri Lanka Community Platform
    ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
 
 /* --------------------------------------------------------------------------
    1. CSS Custom Properties
    -------------------------------------------------------------------------- */
 :root {
   /* Brand palette */
-  --hv-forest:      #061a0c;
-  --hv-deep:        #0d3320;
-  --hv-dark:        #1a4a2e;
-  --hv-mid:         #2d6a4f;
-  --hv-emerald:     #40916c;
-  --hv-bright:      #52b788;
-  --hv-light:       #95d5b2;
-  --hv-pale:        #d8f3dc;
-  --hv-mist:        #f0faf4;
+  --hv-forest:      #041508;
+  --hv-deep:        #082b14;
+  --hv-dark:        #133d22;
+  --hv-mid:         #1e6b3e;
+  --hv-emerald:     #2d9653;
+  --hv-bright:      #02832d;
+  --hv-light:       #74d4a0;
+  --hv-pale:        #c8f0d8;
+  --hv-mist:        #e8f8ef;
 
   /* Accent */
-  --hv-gold:        #f4a261;
-  --hv-amber:       #e76f51;
+  --hv-gold:        #a8d96a;
+  --hv-amber:       #6dbf67;
 
-  /* Neutrals */
-  --hv-text:        #111827;
-  --hv-text-muted:  #6b7280;
-  --hv-text-light:  #9ca3af;
+  /* Neutrals — all green-tinted */
+  --hv-text:        #0c2415;
+  --hv-text-muted:  #3a6b4e;
+  --hv-text-light:  #6aab84;
   --hv-white:       #ffffff;
-  --hv-bg:          #f0faf4;
-  --hv-card-bg:     #ffffff;
-  --hv-border:      rgba(82, 183, 136, 0.18);
+  --hv-bg:          #e8f8ef;
+  --hv-card-bg:     #f2fbf5;
+  --hv-border:      rgba(61, 184, 116, 0.22);
 
   /* Shadows */
-  --shadow-xs:      0 1px 4px rgba(0, 0, 0, 0.06);
-  --shadow-sm:      0 2px 12px rgba(0, 0, 0, 0.08);
-  --shadow-md:      0 8px 32px rgba(0, 0, 0, 0.10);
-  --shadow-lg:      0 20px 60px rgba(0, 0, 0, 0.14);
-  --shadow-green:   0 8px 32px rgba(82, 183, 136, 0.35);
+  --shadow-xs:      0 1px 4px rgba(4, 21, 8, 0.07);
+  --shadow-sm:      0 2px 12px rgba(4, 21, 8, 0.09);
+  --shadow-md:      0 8px 32px rgba(4, 21, 8, 0.12);
+  --shadow-lg:      0 20px 60px rgba(4, 21, 8, 0.16);
+  --shadow-green:   0 8px 32px rgba(61, 184, 116, 0.38);
 
   /* Radii */
   --r-sm:   8px;
@@ -114,7 +116,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   align-items: center;
   padding: 0.5rem 1.35rem;
   border-radius: var(--r-full);
-  background: linear-gradient(135deg, var(--hv-bright) 0%, var(--hv-emerald) 100%);
+  background: var(--hv-bright);
   color: var(--hv-white);
   font-size: 0.88rem;
   font-weight: 700;
@@ -123,8 +125,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   box-shadow: var(--shadow-green);
 }
 .hv-btn-primary:hover {
+  background: var(--hv-light);
+  color: var(--hv-dark);
   transform: translateY(-2px);
-  box-shadow: 0 12px 36px rgba(82, 183, 136, 0.45);
 }
 
 /* Hero – filled */
@@ -134,16 +137,16 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   gap: 10px;
   padding: 0.95rem 2.1rem;
   border-radius: var(--r-full);
-  background: linear-gradient(135deg, var(--hv-bright) 0%, var(--hv-mid) 100%);
+  background: var(--hv-bright);
   color: var(--hv-white);
   font-size: 1rem;
   font-weight: 700;
   transition: var(--trans);
-  box-shadow: 0 10px 40px rgba(82, 183, 136, 0.45);
 }
 .hv-btn-hero-primary:hover {
+  background: var(--hv-light);
+  color: var(--hv-dark);
   transform: translateY(-3px);
-  box-shadow: 0 18px 52px rgba(82, 183, 136, 0.55);
 }
 
 /* Hero – outline */
@@ -181,8 +184,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   box-shadow: var(--shadow-md);
 }
 .hv-btn-cta-primary:hover {
+  background: var(--hv-pale);
+  color: var(--hv-dark);
   transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
 }
 
 /* CTA – outline */
@@ -210,93 +214,219 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
-.hv-logo-leaf {
-  font-size: 1.8rem;
-  display: inline-block;
-  animation: leafSway 4s ease-in-out infinite;
-  transform-origin: bottom center;
+.hv-logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(82, 183, 136, 0.15);
+  border: 1.5px solid rgba(82, 183, 136, 0.35);
+  flex-shrink: 0;
+  transition: var(--trans);
 }
 
-@keyframes leafSway {
-  0%, 100% { transform: rotate(-8deg); }
-  50%       { transform: rotate(8deg);  }
+.hv-logo-emoji {
+  font-size: 1.5rem;
+  line-height: 1;
+  user-select: none;
+}
+.hv-logo:hover .hv-logo-icon {
+  background: rgba(82, 183, 136, 0.28);
+  border-color: var(--hv-bright);
 }
 
 .hv-logo-text {
-  font-size: 1.45rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
   font-weight: 900;
   color: var(--hv-white);
-  letter-spacing: -0.5px;
+  letter-spacing: 0.5px;
   line-height: 1;
 }
 .hv-logo-text span {
-  color: var(--hv-bright);
+  color: var(--hv-white);
 }
 
 /* --------------------------------------------------------------------------
-   6. Navbar
+   6. Navbar  — floating pill style
    -------------------------------------------------------------------------- */
+
+/* Outer wrapper: full-width fixed strip that holds the floating pill */
 .hv-nav {
   position: fixed;
-  inset-block-start: 0;
-  inset-inline: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 200;
-  height: 72px;
-  background: rgba(6, 26, 12, 0.82);
-  backdrop-filter: blur(22px) saturate(180%);
-  -webkit-backdrop-filter: blur(22px) saturate(180%);
-  border-bottom: 1px solid rgba(82, 183, 136, 0.14);
-  transition: background 0.3s var(--ease);
+  /* Padding creates the gap between pill and viewport edges */
+  padding: 16px 24px;
+  /* No background on the wrapper — background lives on the pill */
+  background: transparent;
+  pointer-events: none;   /* let clicks pass through the gap */
 }
 
+/* Inner pill: the actual visible bar with glass + rounded edges */
 .hv-nav-container {
-  max-width: 1240px;
+  pointer-events: all;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 0 2rem;
-  height: 100%;
-  display: flex;
+  padding: 0 1.5rem;
+  height: 58px;
+  /* Three-column: logo | links | actions */
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
+  gap: 1.5rem;
+  /* Curved capsule shape */
+  border-radius: 9999px;
+  /* Glass effect */
+  background: rgba(4, 21, 8, 0.58);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(61, 184, 116, 0.18);
+  box-shadow: 0 4px 32px rgba(4, 21, 8, 0.35);
+  transition: background 0.35s var(--ease), box-shadow 0.35s var(--ease);
 }
 
+/* ── Centered links ── */
 .hv-nav-links {
   display: flex;
   align-items: center;
-  gap: 2.25rem;
+  justify-content: center;
+  gap: 4px;
 }
 
 .hv-nav-link {
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.78);
   font-size: 0.9rem;
   font-weight: 500;
+  padding: 0.42rem 1.15rem;
+  border-radius: var(--r-full);
   transition: var(--trans);
-  position: relative;
-}
-.hv-nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--hv-bright);
-  border-radius: 2px;
-  transition: width 0.25s var(--ease);
+  white-space: nowrap;
 }
 .hv-nav-link:hover {
-  color: var(--hv-bright);
-}
-.hv-nav-link:hover::after {
-  width: 100%;
+  color: var(--hv-white);
+  background: rgba(255, 255, 255, 0.1);
 }
 
+/* Active pill — solid white with dark text, exactly like the image */
+.hv-nav-link--active {
+  background: var(--hv-white);
+  color: #1a2e1a !important;
+  font-weight: 600;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+}
+.hv-nav-link--active:hover {
+  background: rgba(255, 255, 255, 0.94);
+  color: #1a2e1a !important;
+}
+
+/* ── Right actions ── */
 .hv-nav-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* "Let's Talk" — thin-border pill (kept for fallback) */
+.hv-btn-talk {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.48rem 1.35rem;
+  border-radius: var(--r-full);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  color: var(--hv-white);
+  font-size: 0.87rem;
+  font-weight: 600;
+  letter-spacing: 0.15px;
+  transition: var(--trans);
+  white-space: nowrap;
+}
+.hv-btn-talk:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--hv-white);
+  transform: translateY(-1px);
+}
+
+/* Sign In — ghost pill */
+.hv-btn-signin {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.46rem 1.25rem;
+  border-radius: var(--r-full);
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  color: var(--hv-white);
+  font-size: 0.87rem;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  transition: var(--trans);
+  white-space: nowrap;
+}
+.hv-btn-signin:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--hv-white);
+  transform: translateY(-1px);
+}
+
+/* Register — ghost pill (same as Sign In) */
+.hv-btn-register {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.46rem 1.25rem;
+  border-radius: var(--r-full);
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  color: var(--hv-white);
+  font-size: 0.87rem;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  transition: var(--trans);
+  white-space: nowrap;
+  background: rgba(61, 184, 116, 0.38)
+}
+.hv-btn-register:hover {
+  background: rgba(4, 21, 8, 0.12);
+  border-color: var(--hv-white);
+  transform: translateY(-1px);
+}
+
+/* Hamburger — CIRCLE button */
+.hv-nav-hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  transition: var(--trans);
+  flex-shrink: 0;
+  padding: 0;
+}
+.hv-nav-hamburger:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.55);
+  transform: scale(1.05);
+}
+.hv-nav-hamburger span {
+  display: block;
+  width: 16px;
+  height: 1.5px;
+  background: var(--hv-white);
+  border-radius: 2px;
+  transition: var(--trans);
+}
+.hv-nav-hamburger span:nth-child(2) {
+  width: 11px;
 }
 
 /* --------------------------------------------------------------------------
@@ -304,193 +434,519 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    -------------------------------------------------------------------------- */
 .hv-hero {
   position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  min-height: 620px;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse 80% 60% at 10% 40%, rgba(64, 145, 108, 0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 90% 20%, rgba(82, 183, 136, 0.12) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 70% at 50% 90%, rgba(13, 51, 32, 0.5) 0%, transparent 60%),
-    linear-gradient(160deg, #061a0c 0%, #0d3320 28%, #1a4a2e 55%, #0b2416 80%, #040e07 100%);
+  background: #040e07; /* fallback while video loads */
 }
 
-/* Background animated blobs */
-.hv-blob {
+/* Full-screen video background */
+.hv-hero-video {
   position: absolute;
-  border-radius: 50%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  z-index: 0;
+  display: block;
   pointer-events: none;
 }
-.hv-blob-1 {
-  width: 700px;
-  height: 700px;
-  top: -200px;
-  right: -150px;
-  background: radial-gradient(circle, rgba(64, 145, 108, 0.1) 0%, transparent 70%);
-  animation: blobPulse 9s ease-in-out infinite;
-}
-.hv-blob-2 {
-  width: 500px;
-  height: 500px;
-  bottom: -100px;
-  left: -80px;
-  background: radial-gradient(circle, rgba(82, 183, 136, 0.08) 0%, transparent 70%);
-  animation: blobPulse 12s ease-in-out infinite 3s;
-}
-.hv-blob-3 {
-  width: 300px;
-  height: 300px;
-  top: 40%;
-  left: 30%;
-  background: radial-gradient(circle, rgba(149, 213, 178, 0.06) 0%, transparent 70%);
-  animation: blobPulse 7s ease-in-out infinite 1.5s;
-}
-@keyframes blobPulse {
-  0%, 100% { transform: scale(1);   opacity: 0.7; }
-  50%       { transform: scale(1.3); opacity: 1;   }
-}
 
-/* Floating leaf particles */
-.hv-leaf {
-  position: absolute;
-  font-size: 1.4rem;
-  pointer-events: none;
-  opacity: 0;
-  animation: leafFall 12s ease-in-out infinite;
-}
-.hv-leaf-1 { left: 8%;  animation-delay: 0s;   animation-duration: 14s; font-size: 1.2rem; }
-.hv-leaf-2 { left: 18%; animation-delay: 2s;   animation-duration: 11s; font-size: 1.6rem; }
-.hv-leaf-3 { left: 35%; animation-delay: 4s;   animation-duration: 13s; font-size: 1.1rem; }
-.hv-leaf-4 { left: 52%; animation-delay: 1s;   animation-duration: 16s; font-size: 1.4rem; }
-.hv-leaf-5 { left: 65%; animation-delay: 6s;   animation-duration: 10s; font-size: 1.7rem; }
-.hv-leaf-6 { left: 75%; animation-delay: 3s;   animation-duration: 15s; font-size: 1.2rem; }
-.hv-leaf-7 { left: 85%; animation-delay: 5s;   animation-duration: 12s; font-size: 1.5rem; }
-.hv-leaf-8 { left: 93%; animation-delay: 7.5s; animation-duration: 9s;  font-size: 1.3rem; }
-@keyframes leafFall {
-  0%   { transform: translateY(-60px) rotate(0deg);   opacity: 0; }
-  10%  { opacity: 0.7; }
-  90%  { opacity: 0.5; }
-  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-}
-
-/* Dot-grid texture overlay */
-.hv-hero::before {
-  content: '';
+/* Layered overlay:
+   - subtle global dimming
+   - strong bottom vignette so text pops */
+.hv-hero-overlay {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(82, 183, 136, 0.12) 1px, transparent 1px);
-  background-size: 36px 36px;
-  pointer-events: none;
+  z-index: 1;
+  background:
+    linear-gradient(
+      to top,
+      rgba(3, 11, 5, 0.88) 0%,
+      rgba(3, 11, 5, 0.55) 30%,
+      rgba(3, 11, 5, 0.18) 60%,
+      rgba(3, 11, 5, 0.04) 100%
+    ),
+    linear-gradient(
+      to right,
+      rgba(3, 11, 5, 0.3) 0%,
+      transparent 60%
+    );
 }
 
-/* Hero content */
+/* Hero content — pinned to bottom-left, matching the image */
 .hv-hero-content {
-  position: relative;
+  position: absolute;
+  left: 0;
+  bottom: 0;
   z-index: 10;
-  text-align: center;
-  max-width: 820px;
-  padding: 0 1.5rem;
-  margin-top: 72px;
-}
-
-.hv-hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0.42rem 1.1rem;
-  border-radius: var(--r-full);
-  background: rgba(82, 183, 136, 0.15);
-  border: 1px solid rgba(82, 183, 136, 0.35);
-  color: var(--hv-light);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  margin-bottom: 1.75rem;
-  animation: fadeSlideDown 0.7s var(--ease) 0.1s both;
+  padding: 0 3.5rem 5.5rem;
+  max-width: 680px;
+  animation: fadeSlideUp 0.8s var(--ease) 0.2s both;
 }
 
 .hv-hero-title {
-  font-size: clamp(2.8rem, 6.5vw, 5rem);
+  font-size: clamp(2.8rem, 5.5vw, 4.8rem);
   font-weight: 900;
   color: var(--hv-white);
-  line-height: 1.08;
-  letter-spacing: -2.5px;
-  margin-bottom: 1.5rem;
-  animation: fadeSlideUp 0.7s var(--ease) 0.3s both;
+  line-height: 1.06;
+  letter-spacing: -2px;
+  margin-bottom: 1.1rem;
 }
 
 .hv-hero-em {
   font-style: normal;
-  background: linear-gradient(135deg, var(--hv-bright) 0%, var(--hv-light) 50%, var(--hv-gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--hv-white);
 }
 
 .hv-hero-desc {
-  font-size: clamp(0.98rem, 1.8vw, 1.15rem);
-  color: rgba(255, 255, 255, 0.68);
-  max-width: 620px;
-  margin: 0 auto 2.5rem;
-  line-height: 1.85;
-  animation: fadeSlideUp 0.7s var(--ease) 0.5s both;
+  font-size: clamp(0.85rem, 1.3vw, 0.97rem);
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 480px;
+  margin-bottom: 2rem;
+  line-height: 1.75;
 }
 
-.hv-hero-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
+/* "GET INVOLVED" button */
+.hv-btn-get-involved {
+  display: inline-flex;
   align-items: center;
-  flex-wrap: wrap;
-  animation: fadeSlideUp 0.7s var(--ease) 0.7s both;
+  gap: 0;
+  border-radius: var(--r-full);
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--hv-forest);
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: var(--trans);
+  overflow: hidden;
+}
+.hv-btn-get-involved:hover {
+  background: var(--hv-pale);
+  transform: translateY(-2px);
+}
+/* Text part padding */
+.hv-btn-get-involved > :not(.hv-btn-arrow) {
+  padding: 0.8rem 1.5rem;
+}
+/* This targets the text node — wrap text in span via inline style trick */
+.hv-btn-get-involved {
+  padding-left: 1.6rem;
 }
 
-/* Trust / social-proof strip */
-.hv-hero-trust {
+/* Arrow circle */
+.hv-btn-arrow {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  margin-top: 2.5rem;
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 0.82rem;
-  font-weight: 500;
-  animation: fadeSlideUp 0.7s var(--ease) 0.9s both;
-}
-.hv-trust-dot {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: var(--hv-bright);
-  box-shadow: 0 0 6px var(--hv-bright);
+  background: var(--hv-mid);
+  color: var(--hv-white);
+  flex-shrink: 0;
+  margin: 3px 3px 3px 0.8rem;
+  transition: var(--trans);
 }
-.hv-trust-sep {
-  opacity: 0.4;
+.hv-btn-get-involved:hover .hv-btn-arrow {
+  background: var(--hv-dark);
 }
 
-/* Bottom wave transition */
-.hv-hero-wave {
+/* Scroll down indicator — bottom-right */
+.hv-hero-scroll {
   position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  line-height: 0;
-  pointer-events: none;
+  right: 3rem;
+  bottom: 2.8rem;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  animation: fadeSlideUp 0.8s var(--ease) 1s both;
 }
-.hv-hero-wave svg {
-  width: 100%;
-  height: 80px;
+
+.hv-scroll-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.75);
+  animation: scrollBounce 2.2s ease-in-out infinite;
+}
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(6px); }
+}
+
+.hv-scroll-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  margin-top: 6px;
 }
 
 /* --------------------------------------------------------------------------
-   8. Stats Strip
+   8. Featured Places
+   -------------------------------------------------------------------------- */
+.hv-featured {
+  background: #ffffff;
+  padding: 6rem 2rem;
+}
+
+.hv-featured-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hv-featured-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 3.5rem;
+}
+
+@media (min-width: 640px) {
+  .hv-featured-header {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+}
+
+.hv-featured-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--hv-bright);
+  margin-bottom: 0.6rem;
+}
+
+.hv-featured-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 500;
+  color: #1a2e1a;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+.hv-featured-title-em {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.hv-featured-viewall {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--hv-bright);
+  white-space: nowrap;
+  transition: var(--trans);
+  flex-shrink: 0;
+  padding-bottom: 2px;
+}
+
+.hv-featured-viewall:hover {
+  color: var(--hv-mid);
+}
+
+.hv-featured-viewall svg {
+  transition: transform 0.2s var(--ease);
+}
+
+.hv-featured-viewall:hover svg {
+  transform: translate(2px, -2px);
+}
+
+.hv-featured-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .hv-featured-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .hv-featured-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.hv-place-card {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #111;
+  transition: transform 0.3s var(--ease);
+}
+
+.hv-place-card:hover {
+  transform: translateY(-5px);
+}
+
+.hv-place-card-img-wrap {
+  aspect-ratio: 4/5;
+  overflow: hidden;
+}
+
+.hv-place-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s var(--ease);
+}
+
+.hv-place-card:hover .hv-place-card-img {
+  transform: scale(1.05);
+}
+
+.hv-place-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.12) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+.hv-place-card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem;
+  color: #fff;
+}
+
+.hv-place-card-district {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.3px;
+}
+
+.hv-place-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  line-height: 1.3;
+}
+
+.hv-place-card-desc {
+  font-size: 0.82rem;
+  opacity: 0.75;
+  line-height: 1.65;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   How It Works (HiW)
+   -------------------------------------------------------------------------- */
+.hv-hiw {
+  background: var(--hv-mist);
+  padding: 6rem 2rem;
+}
+
+.hv-hiw-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.hv-hiw-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.hv-hiw-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--hv-bright);
+  margin-bottom: 0.75rem;
+}
+
+.hv-hiw-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 5vw, 3.5rem);
+  font-weight: 500;
+  color: #1a2e1a;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+}
+
+.hv-hiw-em {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.hv-hiw-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .hv-hiw-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.hv-hiw-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.5rem 2rem;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid rgba(61, 184, 116, 0.14);
+  overflow: hidden;
+  transition: transform 0.25s var(--ease);
+}
+
+.hv-hiw-card:hover {
+  transform: translateY(-4px);
+}
+
+.hv-hiw-num {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  font-family: 'Playfair Display', serif;
+  font-size: 3.2rem;
+  font-weight: 700;
+  color: rgba(61, 184, 116, 0.13);
+  line-height: 1;
+  user-select: none;
+}
+
+.hv-hiw-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(61, 184, 116, 0.1);
+  color: var(--hv-mid);
+  margin-bottom: 1.4rem;
+  flex-shrink: 0;
+}
+
+.hv-hiw-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a2e1a;
+  margin-bottom: 0.6rem;
+}
+
+.hv-hiw-card-desc {
+  font-size: 0.875rem;
+  color: #5a6b5a;
+  line-height: 1.7;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   District Explorer
+   -------------------------------------------------------------------------- */
+.hv-districts-sec {
+  background: #ffffff;
+  padding: 6rem 2rem;
+}
+
+.hv-districts-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.hv-districts-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.hv-districts-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--hv-bright);
+  margin-bottom: 0.75rem;
+}
+
+.hv-districts-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 5vw, 3.5rem);
+  font-weight: 500;
+  color: #1a2e1a;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+}
+
+.hv-districts-em {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.hv-districts-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.hv-district-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 1.35rem;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(61, 184, 116, 0.3);
+  background: rgba(255,255,255,0.6);
+  color: #2a3a2a;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: var(--trans);
+  letter-spacing: 0.1px;
+}
+
+.hv-district-pill:hover {
+  border-color: var(--hv-bright);
+  color: var(--hv-mid);
+  background: rgba(61, 184, 116, 0.06);
+}
+
+/* --------------------------------------------------------------------------
+   9. Stats Strip
    -------------------------------------------------------------------------- */
 .hv-stats {
-  background: var(--hv-white);
-  box-shadow: var(--shadow-sm);
+  background: var(--hv-mist);
+  border-bottom: 1px solid rgba(61, 184, 116, 0.18);
+  box-shadow: 0 2px 12px rgba(4, 21, 8, 0.06);
   position: relative;
   z-index: 5;
 }
@@ -518,16 +974,13 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-size: 2rem;
   font-weight: 900;
   line-height: 1;
-  background: linear-gradient(135deg, var(--hv-mid) 0%, var(--hv-bright) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--hv-bright);
 }
 
 .hv-stat-label {
   font-size: 0.73rem;
   font-weight: 600;
-  color: var(--hv-text-muted);
+  color: var(--hv-mid);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -535,7 +988,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .hv-stat-sep {
   width: 1px;
   height: 38px;
-  background: linear-gradient(to bottom, transparent, #e5e7eb, transparent);
+  background: rgba(61, 184, 116, 0.35);
   flex-shrink: 0;
 }
 
@@ -544,7 +997,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    -------------------------------------------------------------------------- */
 .hv-categories {
   background: var(--hv-mist);
-  border-bottom: 1px solid rgba(82, 183, 136, 0.12);
+  border-bottom: 1px solid rgba(61, 184, 116, 0.18);
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -565,8 +1018,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   gap: 6px;
   padding: 0.45rem 1.1rem;
   border-radius: var(--r-full);
-  background: var(--hv-white);
-  border: 1.5px solid var(--hv-border);
+  background: rgba(61, 184, 116, 0.1);
+  border: 1.5px solid rgba(61, 184, 116, 0.28);
   color: var(--hv-mid);
   font-size: 0.84rem;
   font-weight: 600;
@@ -579,7 +1032,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   border-color: var(--hv-bright);
   color: var(--hv-white);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-green);
 }
 
 /* --------------------------------------------------------------------------
@@ -607,6 +1059,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   letter-spacing: 1.8px;
   text-transform: uppercase;
   margin-bottom: 1rem;
+  border: 1px solid rgba(61, 184, 116, 0.25);
 }
 .hv-tag-light {
   background: rgba(82, 183, 136, 0.18);
@@ -636,7 +1089,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    11. Features Section
    -------------------------------------------------------------------------- */
 .hv-features {
-  background: var(--hv-white);
+  background: var(--hv-mist);
 }
 
 .hv-features-grid {
@@ -650,7 +1103,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   border-radius: var(--r-lg);
   padding: 2.1rem 1.75rem;
   background: var(--hv-card-bg);
-  border: 1.5px solid var(--hv-border);
+  border: 1.5px solid rgba(61, 184, 116, 0.2);
   overflow: hidden;
   transition: var(--trans);
   cursor: default;
@@ -662,14 +1115,14 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--hv-bright), var(--hv-emerald));
+  background: var(--hv-bright);
   opacity: 0;
   transition: opacity 0.3s var(--ease);
 }
 .hv-feature-card:hover {
   transform: translateY(-7px);
-  box-shadow: var(--shadow-lg);
-  border-color: rgba(82, 183, 136, 0.35);
+  background: var(--hv-mist);
+  border-color: var(--hv-bright);
 }
 .hv-feature-card:hover::before {
   opacity: 1;
@@ -693,7 +1146,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .hv-feature-title {
   font-size: 1.12rem;
   font-weight: 800;
-  color: var(--hv-forest);
+  color: var(--hv-dark);
   margin-bottom: 0.6rem;
   letter-spacing: -0.3px;
 }
@@ -709,16 +1162,14 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    -------------------------------------------------------------------------- */
 .hv-how {
   position: relative;
-  background: linear-gradient(160deg, var(--hv-forest) 0%, var(--hv-deep) 50%, var(--hv-dark) 100%);
+  background: var(--hv-deep);
   overflow: hidden;
 }
 
 .hv-how-bg-pattern {
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(82, 183, 136, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(82, 183, 136, 0.05) 1px, transparent 1px);
+  background-image: none;
   background-size: 48px 48px;
   pointer-events: none;
 }
@@ -747,7 +1198,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--hv-bright) 0%, var(--hv-emerald) 100%);
+  background: var(--hv-bright);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -808,7 +1259,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    13. Districts Section
    -------------------------------------------------------------------------- */
 .hv-districts {
-  background: var(--hv-mist);
+  background: var(--hv-pale);
 }
 
 .hv-districts-grid {
@@ -823,8 +1274,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   gap: 10px;
   padding: 0.85rem 1.1rem;
   border-radius: var(--r-md);
-  background: var(--hv-white);
-  border: 1.5px solid var(--hv-border);
+  background: var(--hv-card-bg);
+  border: 1.5px solid rgba(61, 184, 116, 0.22);
   transition: var(--trans);
   box-shadow: var(--shadow-xs);
   overflow: hidden;
@@ -834,14 +1285,13 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--hv-bright), var(--hv-emerald));
+  background: var(--hv-bright);
   opacity: 0;
   transition: opacity 0.25s var(--ease);
   z-index: 0;
 }
 .hv-district-card:hover {
   transform: translateY(-3px);
-  box-shadow: var(--shadow-green);
   border-color: transparent;
 }
 .hv-district-card:hover::after {
@@ -869,7 +1319,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   flex: 1;
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--hv-text);
+  color: var(--hv-dark);
 }
 
 .hv-district-arrow {
@@ -882,7 +1332,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    -------------------------------------------------------------------------- */
 .hv-cta {
   position: relative;
-  background: linear-gradient(135deg, var(--hv-emerald) 0%, var(--hv-mid) 40%, var(--hv-dark) 100%);
+  background: var(--hv-dark);
   padding: 7rem 2rem;
   text-align: center;
   overflow: hidden;
@@ -1052,7 +1502,666 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 /* --------------------------------------------------------------------------
-   17. Responsive — Tablet (≤ 1024px)
+   17. About Page
+   -------------------------------------------------------------------------- */
+
+/* Hero */
+.hv-about-hero {
+  position: relative;
+  background-image: url('/images/about.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hv-about-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 21, 8, 0.62);
+  pointer-events: none;
+}
+
+.hv-about-hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.hv-about-hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--r-full);
+  padding: 0.35rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--hv-light);
+  letter-spacing: 0.06em;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeSlideUp 0.7s var(--ease) 0.1s forwards;
+}
+
+.hv-about-hero-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2.4rem, 5.5vw, 4rem);
+  font-weight: 900;
+  line-height: 1.18;
+  letter-spacing: -1.5px;
+  color: var(--hv-white);
+  margin: 0 0 1.5rem;
+  opacity: 0;
+  animation: fadeSlideUp 0.8s var(--ease) 0.35s forwards;
+}
+
+.hv-about-hero-sub {
+  font-size: 1.08rem;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.68);
+  max-width: 600px;
+  margin: 0 auto;
+  opacity: 0;
+  animation: fadeSlideUp 0.8s var(--ease) 0.6s forwards;
+}
+
+/* Stats strip */
+.hv-about-stats {
+  border-bottom: 1px solid var(--hv-border);
+  background: var(--hv-white);
+  padding: 3.5rem 2rem;
+}
+
+.hv-about-stats-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  text-align: center;
+}
+
+.hv-about-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.hv-about-stat-value {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--hv-dark);
+  line-height: 1;
+}
+
+.hv-about-stat-label {
+  font-size: 0.82rem;
+  color: var(--hv-text-muted);
+  font-weight: 500;
+}
+
+/* Mission */
+.hv-about-mission {
+  background: var(--hv-white);
+  padding: 6rem 2rem;
+}
+
+.hv-about-mission-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 5rem;
+  align-items: center;
+}
+
+.hv-about-mission-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+  font-weight: 900;
+  color: var(--hv-text);
+  letter-spacing: -0.5px;
+  margin-bottom: 1.5rem;
+}
+
+.hv-about-mission-body p {
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--hv-text-muted);
+  margin-bottom: 1rem;
+}
+
+.hv-about-mission-body p:last-child {
+  margin-bottom: 0;
+}
+
+.hv-about-mission-visual {
+  position: relative;
+}
+
+.hv-about-mission-slider {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--hv-mist);
+}
+
+.hv-about-slider-item {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+  pointer-events: none;
+}
+
+.hv-about-slider-item--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hv-about-slider-dots {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 5;
+}
+
+.hv-about-slider-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.25s, transform 0.25s;
+}
+
+.hv-about-slider-dot--active {
+  background: var(--hv-white);
+  transform: scale(1.3);
+}
+
+.hv-about-mission-deco {
+  position: absolute;
+  border-radius: var(--r-lg);
+  z-index: -1;
+}
+
+.hv-about-mission-deco--br {
+  width: 160px;
+  height: 160px;
+  background: var(--hv-pale);
+  bottom: -1.5rem;
+  left: -1.5rem;
+}
+
+.hv-about-mission-deco--tl {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--hv-mist);
+  top: -1.5rem;
+  right: -1.5rem;
+}
+
+/* Values */
+.hv-about-values {
+  background: var(--hv-mist);
+}
+
+.hv-about-values-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.hv-about-values-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+  font-weight: 900;
+  color: var(--hv-text);
+  letter-spacing: -0.5px;
+  margin-bottom: 0.75rem;
+}
+
+.hv-about-values-sub {
+  color: var(--hv-text-muted);
+  font-size: 1rem;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.hv-about-values-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.hv-about-value-card {
+  background: var(--hv-white);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 1.5rem;
+  border: 1.5px solid var(--hv-border);
+  transition: var(--trans);
+}
+
+.hv-about-value-card:hover {
+  background: var(--hv-card-bg);
+  border-color: var(--hv-pale);
+}
+
+.hv-about-value-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  background: var(--hv-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--hv-dark);
+  margin-bottom: 1.1rem;
+  transition: background 0.2s;
+}
+
+.hv-about-value-card:hover .hv-about-value-icon {
+  background: var(--hv-light);
+}
+
+.hv-about-value-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--hv-text);
+  margin-bottom: 0.55rem;
+}
+
+.hv-about-value-desc {
+  font-size: 0.88rem;
+  line-height: 1.75;
+  color: var(--hv-text-muted);
+  margin: 0;
+}
+
+/* CTA */
+.hv-about-cta {
+  background: var(--hv-white);
+  padding: 7rem 2rem;
+  text-align: center;
+}
+
+.hv-about-cta-inner {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.hv-about-cta-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 900;
+  color: var(--hv-text);
+  letter-spacing: -1px;
+  margin-bottom: 0.9rem;
+}
+
+.hv-about-cta-sub {
+  font-size: 1rem;
+  color: var(--hv-text-muted);
+  line-height: 1.8;
+  margin-bottom: 2.25rem;
+}
+
+.hv-about-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--hv-dark);
+  color: var(--hv-white);
+  border-radius: var(--r-full);
+  padding: 0.85rem 2.25rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: background 0.2s;
+}
+
+.hv-about-cta-btn:hover {
+  background: var(--hv-mid);
+}
+
+/* --------------------------------------------------------------------------
+   Auth Pages (Register / Login)
+   -------------------------------------------------------------------------- */
+
+.hv-auth-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Left branding panel */
+.hv-auth-panel--left {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  height: 100%;
+}
+
+.hv-auth-panel--signup {
+  background-image: url('/images/signup.jpg');
+}
+
+.hv-auth-panel--signin {
+  background-image: url('/images/signin.jpg');
+  background-position: top center;
+}
+
+.hv-auth-panel-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 21, 8, 0.72);
+}
+
+.hv-auth-panel-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem 2.5rem 2.5rem;
+  width: 100%;
+}
+
+.hv-auth-panel-content .hv-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.hv-auth-panel-body {
+  margin-top: auto;
+  padding-top: 3rem;
+}
+
+.hv-auth-panel-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  font-weight: 900;
+  color: var(--hv-white);
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.6rem;
+}
+
+.hv-auth-panel-title em {
+  font-style: italic;
+  color: var(--hv-light);
+}
+
+.hv-auth-panel-sub {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.62);
+  max-width: 380px;
+  margin-bottom: 1.5rem;
+}
+
+.hv-auth-panel-stats {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.hv-auth-panel-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.hv-auth-panel-stat-val {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--hv-light);
+  line-height: 1;
+}
+
+.hv-auth-panel-stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Right form panel */
+.hv-auth-panel--right {
+  background: var(--hv-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 2rem;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.hv-auth-form-wrap {
+  width: 100%;
+  max-width: 440px;
+}
+
+.hv-auth-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--hv-text-muted);
+  text-decoration: none;
+  margin-bottom: 1.2rem;
+  transition: color 0.2s;
+}
+
+.hv-auth-back:hover {
+  color: var(--hv-emerald);
+}
+
+.hv-auth-back-arrow {
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+
+.hv-auth-back:hover .hv-auth-back-arrow {
+  transform: translateX(-3px);
+}
+
+.hv-auth-form-header {
+  margin-bottom: 1.1rem;
+}
+
+.hv-auth-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--hv-text);
+  letter-spacing: -0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.hv-auth-subtitle {
+  font-size: 0.92rem;
+  color: var(--hv-text-muted);
+}
+
+/* Form */
+.hv-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.hv-auth-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.hv-auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.hv-auth-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hv-auth-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--hv-text);
+  letter-spacing: 0.02em;
+}
+
+.hv-auth-forgot {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--hv-emerald);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.hv-auth-forgot:hover {
+  color: var(--hv-dark);
+}
+
+.hv-auth-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hv-auth-input-icon {
+  position: absolute;
+  left: 0.9rem;
+  color: var(--hv-text-light);
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.hv-auth-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 1rem 0 2.5rem;
+  border: 1.5px solid var(--hv-border);
+  border-radius: var(--r-md);
+  background: var(--hv-mist);
+  font-size: 0.9rem;
+  color: var(--hv-text);
+  font-family: inherit;
+  transition: border-color 0.2s, background 0.2s;
+  outline: none;
+  appearance: none;
+}
+
+.hv-auth-input::placeholder {
+  color: var(--hv-text-light);
+}
+
+.hv-auth-input:focus {
+  border-color: var(--hv-emerald);
+  background: var(--hv-white);
+}
+
+.hv-auth-input--padded {
+  padding-right: 2.8rem;
+}
+
+.hv-auth-select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236aab84' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  padding-right: 2.5rem;
+}
+
+.hv-auth-eye {
+  position: absolute;
+  right: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--hv-text-light);
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.hv-auth-eye:hover {
+  color: var(--hv-emerald);
+}
+
+.hv-auth-submit {
+  margin-top: 0.2rem;
+  height: 44px;
+  border-radius: var(--r-full);
+  background: var(--hv-dark);
+  color: var(--hv-white);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+
+.hv-auth-submit:hover {
+  background: var(--hv-mid);
+}
+
+.hv-auth-switch {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--hv-text-muted);
+  margin-top: 0.1rem;
+}
+
+.hv-auth-switch-link {
+  color: var(--hv-emerald);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.hv-auth-switch-link:hover {
+  color: var(--hv-dark);
+}
+
+/* --------------------------------------------------------------------------
+   18. Responsive — Tablet (≤ 1024px)
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .hv-footer-inner {
@@ -1065,14 +2174,23 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .hv-steps {
     gap: 2.5rem;
   }
+
+  /* About */
+  .hv-about-mission-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .hv-about-values-grid { grid-template-columns: repeat(2, 1fr); }
+  .hv-about-stats-inner { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* --------------------------------------------------------------------------
    18. Responsive — Mobile (≤ 768px)
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
+  .hv-nav { padding: 10px 14px; }
+  .hv-nav-container { height: 52px; padding: 0 1rem; }
   .hv-nav-links { display: none; }
-  .hv-nav-actions { gap: 0.5rem; }
+  .hv-nav-actions { gap: 0.4rem; }
+  .hv-btn-signin { display: none; }
+  .hv-btn-register { padding: 0.4rem 1rem; font-size: 0.8rem; }
   .hv-hero-title { letter-spacing: -1.5px; }
   .hv-stat-sep { display: none; }
   .hv-stats-inner { height: auto; padding: 1.25rem 2rem; gap: 1.5rem; }
@@ -1083,6 +2201,17 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .hv-cta { padding: 5rem 1.25rem; }
   .hv-footer-inner { padding: 3rem 1.25rem 2rem; }
   .hv-footer-cols { gap: 2rem; }
+
+  /* About */
+  .hv-about-values-grid { grid-template-columns: 1fr; }
+  .hv-about-stats-inner { grid-template-columns: repeat(2, 1fr); }
+  .hv-about-mission-inner { grid-template-columns: 1fr; }
+
+  /* Auth */
+  .hv-auth-page { grid-template-columns: 1fr; }
+  .hv-auth-panel--left { display: none; }
+  .hv-auth-panel--right { padding: 3rem 1.5rem; min-height: 100vh; }
+  .hv-auth-form-row { grid-template-columns: 1fr; }
 }
 
 /* --------------------------------------------------------------------------
