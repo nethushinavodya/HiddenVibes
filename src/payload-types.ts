@@ -120,6 +120,36 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
+  profileImage?: (string | null) | Media;
+  firstName: string;
+  lastName: string;
+  district:
+    | 'Ampara'
+    | 'Anuradhapura'
+    | 'Badulla'
+    | 'Batticaloa'
+    | 'Colombo'
+    | 'Galle'
+    | 'Gampaha'
+    | 'Hambantota'
+    | 'Jaffna'
+    | 'Kalutara'
+    | 'Kandy'
+    | 'Kegalle'
+    | 'Kilinochchi'
+    | 'Kurunegala'
+    | 'Mannar'
+    | 'Matale'
+    | 'Matara'
+    | 'Monaragala'
+    | 'Mullaitivu'
+    | 'Nuwara Eliya'
+    | 'Polonnaruwa'
+    | 'Puttalam'
+    | 'Ratnapura'
+    | 'Trincomalee'
+    | 'Vavuniya';
+  roles: ('admin' | 'user')[];
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -237,6 +267,11 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  profileImage?: T;
+  firstName?: T;
+  lastName?: T;
+  district?: T;
+  roles?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
