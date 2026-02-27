@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, User, Mail, Lock, MapPin } from 'lucide-react'
 
 const DISTRICTS = [
@@ -33,6 +34,7 @@ const DISTRICTS = [
 ]
 
 const RegisterForm = () => {
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [form, setForm] = useState({
@@ -43,18 +45,72 @@ const RegisterForm = () => {
     password: '',
     confirmPassword: '',
   })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // handle registration logic
+    setError(null)
+
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match.')
+      return
+    }
+
+    if (form.password.length < 8) {
+      setError('Password must be at least 8 characters.')
+      return
+    }
+
+    setLoading(true)
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          district: form.district,
+          password: form.password,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.message ?? 'Registration failed. Please try again.')
+        return
+      }
+
+      setSuccess(true)
+      // Redirect to login after a short delay so the user sees the success message
+      setTimeout(() => router.push('/login'), 1500)
+    } catch {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <form className="hv-auth-form" onSubmit={handleSubmit} noValidate>
+      {error && (
+        <div className="hv-auth-alert hv-auth-alert--error" role="alert">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="hv-auth-alert hv-auth-alert--success" role="status">
+          Account created! Redirecting to login…
+        </div>
+      )}
       <div className="hv-auth-form-row">
         {/* First Name */}
         <div className="hv-auth-field">
@@ -200,8 +256,8 @@ const RegisterForm = () => {
         </div>
       </div>
 
-      <button type="submit" className="hv-auth-submit">
-        Create Account
+      <button type="submit" className="hv-auth-submit" disabled={loading || success}>
+        {loading ? 'Creating Account…' : 'Create Account'}
       </button>
 
       <p className="hv-auth-switch">
