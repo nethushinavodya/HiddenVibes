@@ -1,11 +1,17 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
+import { useAuth } from '@/context/AuthContext'
 
 const LoginForm = () => {
+  const { login } = useAuth()
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -15,13 +21,22 @@ const LoginForm = () => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // handle login logic
+    setError('')
+    setLoading(true)
+    const result = await login(form.email, form.password)
+    setLoading(false)
+    if (result.error) {
+      setError(result.error)
+    } else {
+      router.push('/')
+    }
   }
 
   return (
     <form className="hv-auth-form" onSubmit={handleSubmit} noValidate>
+      {error && <p className="hv-auth-error">{error}</p>}
       {/* Email */}
       <div className="hv-auth-field">
         <label className="hv-auth-label" htmlFor="email">
@@ -77,8 +92,8 @@ const LoginForm = () => {
         </div>
       </div>
 
-      <button type="submit" className="hv-auth-submit">
-        Sign In
+      <button type="submit" className="hv-auth-submit" disabled={loading}>
+        {loading ? 'Signing in…' : 'Sign In'}
       </button>
 
       <p className="hv-auth-switch">
