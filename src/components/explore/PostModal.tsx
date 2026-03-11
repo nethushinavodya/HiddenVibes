@@ -50,6 +50,7 @@ interface PostModalProps {
   onClose: () => void
   currentUserId?: string | null
   onLikeUpdate?: (placeId: string, liked: boolean, likes: number) => void
+  onCommentCountChange?: (placeId: string, delta: number) => void
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -103,11 +104,11 @@ function authorInitial(author: CommentAuthor | string): string {
 // ── Reply Input sub-component ─────────────────────────────────────────────────
 
 function ReplyInput({
-  commentId,
-  currentUserId: _currentUserId,
-  onSubmit,
-  onCancel,
-}: {
+                      commentId,
+                      currentUserId: _currentUserId,
+                      onSubmit,
+                      onCancel,
+                    }: {
   commentId: string
   currentUserId: string
   onSubmit: (commentId: string, text: string) => Promise<void>
@@ -158,7 +159,7 @@ function ReplyInput({
 
 // ── Main Component ────────────────────────────────────────────────────────────
 
-export default function PostModal({ place, onClose, currentUserId, onLikeUpdate }: PostModalProps) {
+export default function PostModal({ place, onClose, currentUserId, onLikeUpdate, onCommentCountChange }: PostModalProps) {
   const [mediaIdx, setMediaIdx] = useState(0)
 
   // Like state
@@ -194,18 +195,9 @@ export default function PostModal({ place, onClose, currentUserId, onLikeUpdate 
     setVideoPlaying(true)
     setReplyingTo(null)
 
-    // Set initial state instantly from the prop (already fetched by explore page)
+    // Set initial state from the prop (already enriched by explore page background fetch)
     setLiked(place.liked ?? false)
     setLikeCount(place.likes ?? 0)
-
-    // Then confirm with a live GET to ensure accuracy (handles stale prop data)
-    fetch(`/api/places/${place.id}/like`, { credentials: 'include' })
-      .then((r) => r.json())
-      .then((d) => {
-        setLiked(d.liked ?? false)
-        setLikeCount(d.likes ?? 0)
-      })
-      .catch(() => {/* keep prop values on network error */})
 
     setCommentsLoading(true)
     fetch(`/api/places/${place.id}/comments`, { credentials: 'include' })
@@ -302,6 +294,7 @@ export default function PostModal({ place, onClose, currentUserId, onLikeUpdate 
       if (res.ok) {
         setComments((prev) => [...prev, { ...data, replies: [], repliesLoaded: true, showReplies: false }])
         setCommentInput('')
+        onCommentCountChange?.(place.id, 1)
         setTimeout(() => commentsRef.current?.scrollTo({ top: commentsRef.current.scrollHeight, behavior: 'smooth' }), 50)
       }
     } finally { setCommentSubmitting(false) }
@@ -399,15 +392,16 @@ export default function PostModal({ place, onClose, currentUserId, onLikeUpdate 
         prev.map((c) =>
           c.id === commentId
             ? {
-                ...c,
-                replies: [...(c.replies ?? []), data],
-                repliesLoaded: true,
-                showReplies: true,
-                replyCount: (c.replyCount ?? 0) + 1,
-              }
+              ...c,
+              replies: [...(c.replies ?? []), data],
+              repliesLoaded: true,
+              showReplies: true,
+              replyCount: (c.replyCount ?? 0) + 1,
+            }
             : c,
         ),
       )
+      onCommentCountChange?.(place!.id, 1)
       setReplyingTo(null)
     }
   }
@@ -427,7 +421,7 @@ export default function PostModal({ place, onClose, currentUserId, onLikeUpdate 
   const submitterName =
     typeof place?.submittedBy === 'object' && place?.submittedBy
       ? `${place.submittedBy.firstName ?? ''} ${place.submittedBy.lastName ?? ''}`.trim() ||
-        place.submittedBy.email?.split('@')[0] || 'explorer'
+      place.submittedBy.email?.split('@')[0] || 'explorer'
       : 'explorer'
   const submitterInitial = submitterName[0]?.toUpperCase() ?? 'E'
 
@@ -671,4 +665,3 @@ export default function PostModal({ place, onClose, currentUserId, onLikeUpdate 
     </div>
   )
 }
-

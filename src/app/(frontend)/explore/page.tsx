@@ -73,6 +73,16 @@ export default function ExplorePage() {
     setActivePlace((prev) => (prev?.id === placeId ? { ...prev, liked, likes } : prev))
   }, [])
 
+  // Keep card comment count in sync after a comment or reply is added inside the modal
+  const handleCommentCountChange = useCallback((placeId: string, delta: number) => {
+    setPlaces((prev) =>
+      prev.map((p) => (p.id === placeId ? { ...p, commentCount: (p.commentCount ?? 0) + delta } : p)),
+    )
+    setActivePlace((prev) =>
+      prev?.id === placeId ? { ...prev, commentCount: (prev.commentCount ?? 0) + delta } : prev,
+    )
+  }, [])
+
   const fetchPlaces = useCallback(async () => {
     setLoading(true)
     setError('')
@@ -86,13 +96,19 @@ export default function ExplorePage() {
         setError(data?.message ?? 'Failed to load places')
         return
       }
-      // Fetch comment counts AND like status for all places in parallel
+
       const docs: PlacePost[] = data.docs ?? []
-      const withCounts = await Promise.all(
+
+      // ── Phase 1: show cards immediately with whatever the main fetch gave us ──
+      setPlaces(docs.map((p) => ({ ...p, commentCount: p.commentCount ?? 0, likes: p.likes ?? 0, liked: p.liked ?? false })))
+      setLoading(false)
+
+      // ── Phase 2: enrich with live comment counts + per-user like status in background ──
+      const enriched = await Promise.all(
         docs.map(async (place) => {
           try {
             const [cr, lr] = await Promise.all([
-              fetch(`/api/places/${place.id}/comments`, { credentials: 'include' }),
+              fetch(`/api/places/${place.id}/comments?limit=0&depth=0`, { credentials: 'include' }),
               fetch(`/api/places/${place.id}/like`, { credentials: 'include' }),
             ])
             const cd = await cr.json()
@@ -109,10 +125,9 @@ export default function ExplorePage() {
           }
         }),
       )
-      setPlaces(withCounts)
+      setPlaces(enriched)
     } catch (e) {
       setError((e as Error).message)
-    } finally {
       setLoading(false)
     }
   }, [])
@@ -271,8 +286,8 @@ export default function ExplorePage() {
         onClose={() => setActivePlace(null)}
         currentUserId={user?.id ?? null}
         onLikeUpdate={handleLikeUpdate}
+        onCommentCountChange={handleCommentCountChange}
       />
     </div>
   )
 }
-
