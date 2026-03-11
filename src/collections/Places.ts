@@ -42,13 +42,18 @@ export const Places: CollectionConfig = {
   },
   hooks: {
     beforeChange: [
-      async ({ data, operation, req }) => {
+      async ({ data, operation, req, context }) => {
         if (operation === 'create' && req.user) {
           data.submittedBy = req.user.id
           data.status = 'pending'
         }
-        // Prevent non-admins from changing status/adminNotes — but allow likes/likedBy updates
-        if (operation === 'update' && !req.user?.roles?.includes('admin')) {
+        // Prevent non-admins from changing status/adminNotes.
+        // The review API passes context.adminOverride for trusted admin actions.
+        if (
+          operation === 'update' &&
+          !context?.adminOverride &&
+          !req.user?.roles?.includes('admin')
+        ) {
           delete data.status
           delete data.adminNotes
         }

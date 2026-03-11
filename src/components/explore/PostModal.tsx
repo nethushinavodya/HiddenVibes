@@ -167,6 +167,11 @@ export default function PostModal({ place, onClose, currentUserId, onLikeUpdate,
   const [likeCount, setLikeCount] = useState(0)
   const [likeLoading, setLikeLoading] = useState(false)
 
+  // Follow state
+  const [isFollowing, setIsFollowing] = useState(false)
+  const [followerCount, setFollowerCount] = useState(0)
+  const [followLoading, setFollowLoading] = useState(false)
+
   // Save
   const [saved, setSaved] = useState(false)
 
@@ -186,6 +191,13 @@ export default function PostModal({ place, onClose, currentUserId, onLikeUpdate,
   const inputRef = useRef<HTMLInputElement>(null)
   const commentsRef = useRef<HTMLDivElement>(null)
 
+  // ── Derived: post owner id ───────────────────────────────────────────────
+  const postOwnerId =
+    typeof place?.submittedBy === 'object' && place?.submittedBy
+      ? place.submittedBy.id
+      : null
+  const isOwnPost = Boolean(currentUserId && postOwnerId && currentUserId === postOwnerId)
+
   // ── Load place data ──────────────────────────────────────────────────────
   useEffect(() => {
     if (!place) return
@@ -194,32 +206,36 @@ export default function PostModal({ place, onClose, currentUserId, onLikeUpdate,
     setVideoMuted(true)
     setVideoPlaying(true)
     setReplyingTo(null)
+    setIsFollowing(false)
+    setFollowerCount(0)
 
-    // Set initial state from the prop (already enriched by explore page background fetch)
+    // Set initial like state from the prop
     setLiked(place.liked ?? false)
     setLikeCount(place.likes ?? 0)
 
+    // Load follow status + comments in parallel — no serial waterfalls
+    const ownerId = typeof place.submittedBy === 'object' && place.submittedBy
+      ? place.submittedBy.id : null
+
     setCommentsLoading(true)
-    fetch(`/api/places/${place.id}/comments`, { credentials: 'include' })
+
+    const followPromise = ownerId
+      ? fetch(`/api/users/${ownerId}/follow`, { credentials: 'include' })
+          .then((r) => r.json())
+          .then((d) => { setIsFollowing(d.isFollowing ?? false); setFollowerCount(d.followers ?? 0) })
+          .catch(() => {})
+      : Promise.resolve()
+
+    const commentsPromise = fetch(`/api/places/${place.id}/comments`, { credentials: 'include' })
       .then((r) => r.json())
-      .then(async (d) => {
-        const docs: DbComment[] = d.docs ?? []
-        // Fetch reply counts for each comment in parallel
-        const withCounts = await Promise.all(
-          docs.map(async (c) => {
-            try {
-              const r = await fetch(`/api/comments/${c.id}/replies`, { credentials: 'include' })
-              const rd = await r.json()
-              return { ...c, replyCount: rd.total ?? 0 }
-            } catch {
-              return c
-            }
-          }),
-        )
-        setComments(withCounts)
+      .then((d) => {
+        // replyCount now comes inline from the API — no extra fetches needed
+        setComments((d.docs ?? []) as DbComment[])
       })
       .catch(() => setComments([]))
       .finally(() => setCommentsLoading(false))
+
+    Promise.all([followPromise, commentsPromise])
   }, [place])
 
   // ── ESC / Arrow keys ──────────────────────────────────────────────────────
@@ -418,12 +434,46 @@ export default function PostModal({ place, onClose, currentUserId, onLikeUpdate,
     setVideoMuted(videoRef.current.muted)
   }
 
+  // ── Follow user ──────────────────────────────────────────────────────────
+  const handleFollow = async () => {
+    if (!postOwnerId || followLoading) return
+    if (!currentUserId) { alert('Please log in to follow users.'); return }
+    setFollowLoading(true)
+    const prevFollowing = isFollowing
+    const prevCount = followerCount
+    // Optimistic update
+    setIsFollowing(!prevFollowing)
+    setFollowerCount((c) => prevFollowing ? c - 1 : c + 1)
+    try {
+      const res = await fetch(`/api/users/${postOwnerId}/follow`, { method: 'POST', credentials: 'include' })
+      const data = await res.json()
+      if (res.ok) {
+        setIsFollowing(data.isFollowing)
+        setFollowerCount(data.followers)
+      } else {
+        setIsFollowing(prevFollowing)
+        setFollowerCount(prevCount)
+      }
+    } catch {
+      setIsFollowing(prevFollowing)
+      setFollowerCount(prevCount)
+    } finally {
+      setFollowLoading(false)
+    }
+  }
+
   const submitterName =
     typeof place?.submittedBy === 'object' && place?.submittedBy
       ? `${place.submittedBy.firstName ?? ''} ${place.submittedBy.lastName ?? ''}`.trim() ||
       place.submittedBy.email?.split('@')[0] || 'explorer'
       : 'explorer'
   const submitterInitial = submitterName[0]?.toUpperCase() ?? 'E'
+
+  const isPostOwner = (author: CommentAuthor | string): boolean => {
+    if (!postOwnerId) return false
+    if (typeof author === 'string') return author === postOwnerId
+    return author.id === postOwnerId
+  }
 
   if (!place) return null
 
@@ -496,6 +546,23 @@ export default function PostModal({ place, onClose, currentUserId, onLikeUpdate,
                 {[place.city, place.district].filter(Boolean).join(', ') || place.title}
               </span>
             </div>
+            {/* Follow button — hidden for own posts or when not logged in */}
+            {!isOwnPost && postOwnerId && (
+              <button
+                className={`hv-modal__follow-btn${isFollowing ? ' hv-modal__follow-btn--following' : ''}`}
+                onClick={handleFollow}
+                disabled={followLoading}
+                aria-label={isFollowing ? 'Unfollow' : 'Follow'}
+              >
+                {followLoading ? (
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : isFollowing ? (
+                  'Following'
+                ) : (
+                  'Follow'
+                )}
+              </button>
+            )}
             <button className="hv-modal__more" aria-label="More options"><MoreHorizontal className="w-5 h-5" /></button>
           </div>
 
