@@ -69,6 +69,9 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    places: Place;
+    comments: Comment;
+    'post-likes': PostLike;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +81,9 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    places: PlacesSelect<false> | PlacesSelect<true>;
+    comments: CommentsSelect<false> | CommentsSelect<true>;
+    'post-likes': PostLikesSelect<false> | PostLikesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -189,6 +195,136 @@ export interface Media {
   focalY?: number | null;
 }
 /**
+ * Community-submitted hidden places across Sri Lanka. Review and approve/reject submissions.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "places".
+ */
+export interface Place {
+  id: string;
+  /**
+   * Name of the hidden place.
+   */
+  title: string;
+  /**
+   * What makes this place special.
+   */
+  description: string;
+  locationType:
+    | 'waterfall'
+    | 'beach'
+    | 'forest'
+    | 'ruins'
+    | 'viewpoint'
+    | 'cave'
+    | 'river'
+    | 'wildlife'
+    | 'village'
+    | 'other';
+  entryFee?: ('free' | 'small' | 'moderate' | 'high' | 'unknown') | null;
+  /**
+   * District where the place is located.
+   */
+  district:
+    | 'Ampara'
+    | 'Anuradhapura'
+    | 'Badulla'
+    | 'Batticaloa'
+    | 'Colombo'
+    | 'Galle'
+    | 'Gampaha'
+    | 'Hambantota'
+    | 'Jaffna'
+    | 'Kalutara'
+    | 'Kandy'
+    | 'Kegalle'
+    | 'Kilinochchi'
+    | 'Kurunegala'
+    | 'Mannar'
+    | 'Matale'
+    | 'Matara'
+    | 'Monaragala'
+    | 'Mullaitivu'
+    | 'Nuwara Eliya'
+    | 'Polonnaruwa'
+    | 'Puttalam'
+    | 'Ratnapura'
+    | 'Trincomalee'
+    | 'Vavuniya';
+  /**
+   * Nearest city, town or village.
+   */
+  city?: string | null;
+  /**
+   * Raw Cloudinary data — use Media Preview above to view images/videos.
+   */
+  mediaFiles?:
+    | {
+        url: string;
+        publicId: string;
+        resourceType: 'image' | 'video';
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Automatically set to the logged-in user who submitted this place.
+   */
+  submittedBy?: (string | null) | User;
+  /**
+   * Set by admin after reviewing the submission.
+   */
+  status: 'pending' | 'approved' | 'rejected';
+  /**
+   * Shown to the submitter — explain why it was approved or rejected.
+   */
+  adminNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * User comments on approved places.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments".
+ */
+export interface Comment {
+  id: string;
+  /**
+   * The place this comment belongs to.
+   */
+  place: string | Place;
+  /**
+   * Set when this is a reply to another comment.
+   */
+  parentComment?: (string | null) | Comment;
+  /**
+   * Automatically set to the logged-in user.
+   */
+  author: string | User;
+  /**
+   * The comment text.
+   */
+  text: string;
+  likes?: number | null;
+  likedBy?: (string | User)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * One record per user-post like.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "post-likes".
+ */
+export interface PostLike {
+  id: string;
+  place: string | Place;
+  user: string | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -219,6 +355,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'places';
+        value: string | Place;
+      } | null)
+    | ({
+        relationTo: 'comments';
+        value: string | Comment;
+      } | null)
+    | ({
+        relationTo: 'post-likes';
+        value: string | PostLike;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -306,6 +454,56 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "places_select".
+ */
+export interface PlacesSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  locationType?: T;
+  entryFee?: T;
+  district?: T;
+  city?: T;
+  mediaFiles?:
+    | T
+    | {
+        url?: T;
+        publicId?: T;
+        resourceType?: T;
+        caption?: T;
+        id?: T;
+      };
+  submittedBy?: T;
+  status?: T;
+  adminNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments_select".
+ */
+export interface CommentsSelect<T extends boolean = true> {
+  place?: T;
+  parentComment?: T;
+  author?: T;
+  text?: T;
+  likes?: T;
+  likedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "post-likes_select".
+ */
+export interface PostLikesSelect<T extends boolean = true> {
+  place?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
