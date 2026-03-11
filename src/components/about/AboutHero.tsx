@@ -1,6 +1,9 @@
 const AboutHero = () => {
   return (
-    <section className="hv-about-hero">
+    <section
+      className="hv-about-hero"
+      style={{ backgroundImage: "url('/images/about.jpg')" }}
+    >
       <div className="hv-about-hero-overlay" aria-hidden="true" />
       <div className="hv-about-hero-inner">
         <div className="hv-about-hero-tag">🌿 Our Story</div>
