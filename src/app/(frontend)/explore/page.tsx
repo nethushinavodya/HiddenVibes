@@ -99,33 +99,31 @@ export default function ExplorePage() {
 
       const docs: PlacePost[] = data.docs ?? []
 
-      // ── Phase 1: show cards immediately with whatever the main fetch gave us ──
-      setPlaces(docs.map((p) => ({ ...p, commentCount: p.commentCount ?? 0, likes: p.likes ?? 0, liked: p.liked ?? false })))
+      // ── Phase 1: render cards instantly ──────────────────────────────────
+      setPlaces(docs.map((p) => ({ ...p, commentCount: 0, likes: p.likes ?? 0, liked: false })))
       setLoading(false)
 
-      // ── Phase 2: enrich with live comment counts + per-user like status in background ──
-      const enriched = await Promise.all(
-        docs.map(async (place) => {
-          try {
-            const [cr, lr] = await Promise.all([
-              fetch(`/api/places/${place.id}/comments?limit=0&depth=0`, { credentials: 'include' }),
-              fetch(`/api/places/${place.id}/like`, { credentials: 'include' }),
-            ])
-            const cd = await cr.json()
-            const ld = await lr.json()
-            return {
-              ...place,
-              commentCount: cd.total ?? 0,
-              likes: ld.likes ?? place.likes ?? 0,
-              liked: ld.liked ?? false,
-              likedBy: ld.likedBy ?? [],
-            }
-          } catch {
-            return place
-          }
-        }),
+      if (!docs.length) return
+
+      // ── Phase 2: single batch request for all likes + comment counts ──────
+      const batchRes = await fetch('/api/explore/batch', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ placeIds: docs.map((p) => p.id) }),
+      })
+      if (!batchRes.ok) return
+      const batchMap: Record<string, { likes: number; commentCount: number; liked: boolean }> =
+        await batchRes.json()
+
+      setPlaces(
+        docs.map((p) => ({
+          ...p,
+          likes: batchMap[p.id]?.likes ?? p.likes ?? 0,
+          commentCount: batchMap[p.id]?.commentCount ?? 0,
+          liked: batchMap[p.id]?.liked ?? false,
+        })),
       )
-      setPlaces(enriched)
     } catch (e) {
       setError((e as Error).message)
       setLoading(false)
