@@ -72,6 +72,7 @@ export interface Config {
     places: Place;
     comments: Comment;
     'post-likes': PostLike;
+    follows: Follow;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +85,7 @@ export interface Config {
     places: PlacesSelect<false> | PlacesSelect<true>;
     comments: CommentsSelect<false> | CommentsSelect<true>;
     'post-likes': PostLikesSelect<false> | PostLikesSelect<true>;
+    follows: FollowsSelect<false> | FollowsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -325,6 +327,19 @@ export interface PostLike {
   createdAt: string;
 }
 /**
+ * One record per follower → following relationship.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "follows".
+ */
+export interface Follow {
+  id: string;
+  follower: string | User;
+  following: string | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -367,6 +382,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'post-likes';
         value: string | PostLike;
+      } | null)
+    | ({
+        relationTo: 'follows';
+        value: string | Follow;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -502,6 +521,16 @@ export interface CommentsSelect<T extends boolean = true> {
 export interface PostLikesSelect<T extends boolean = true> {
   place?: T;
   user?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "follows_select".
+ */
+export interface FollowsSelect<T extends boolean = true> {
+  follower?: T;
+  following?: T;
   updatedAt?: T;
   createdAt?: T;
 }
