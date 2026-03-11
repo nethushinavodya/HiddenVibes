@@ -59,6 +59,7 @@ export default function Navbar() {
           {navLink('/', 'Home')}
           {navLink('/about', 'About')}
           {navLink('/explore', 'Explore Places')}
+          {navLink('/add-place', '+ Add Place')}
         </div>
 
         {/* ── Right actions ── */}
@@ -98,6 +99,20 @@ export default function Navbar() {
                     onClick={() => setDropdownOpen(false)}
                   >
                     My Profile
+                  </Link>
+                  <Link
+                    href="/my-submissions"
+                    className="hv-nav-dropdown-item"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    My Submissions
+                  </Link>
+                  <Link
+                    href="/add-place"
+                    className="hv-nav-dropdown-item"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    + Add a Place
                   </Link>
                   <button
                     className="hv-nav-dropdown-item hv-nav-dropdown-item--danger"
