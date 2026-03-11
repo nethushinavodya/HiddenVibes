@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDocumentInfo, useAuth, useAllFormFields } from '@payloadcms/ui'
 
 const STATUS_CFG = {
@@ -24,13 +24,20 @@ export default function ReviewActions() {
   const [note, setNote] = useState('')
   const [loading, setLoading] = useState(false)
   const [feedback, setFeedback] = useState<{ ok: boolean; msg: string } | null>(null)
+  const fieldStatus = (fields?.status?.value as string) ?? 'pending'
+  const [currentStatus, setCurrentStatus] = useState(fieldStatus)
+
+  useEffect(() => {
+    setCurrentStatus(fieldStatus)
+  }, [fieldStatus])
 
   if (!user?.roles?.includes('admin') || !id) return null
 
-  const currentStatus = (fields?.status?.value as string) ?? 'pending'
   const cfg = STATUS_CFG[currentStatus as keyof typeof STATUS_CFG] ?? STATUS_CFG.pending
 
   const handleAction = async (newStatus: 'approved' | 'rejected') => {
+    if (loading || currentStatus === 'approved') return
+
     setLoading(true)
     setFeedback(null)
     try {
@@ -45,11 +52,16 @@ export default function ReviewActions() {
       })
 
       if (res.ok) {
+        const updated = (await res.json().catch(() => ({}))) as { status?: string }
+        const nextStatus = updated.status ?? newStatus
+        setCurrentStatus(nextStatus)
+        if (fields?.status) {
+          fields.status.value = nextStatus
+        }
         setFeedback({
           ok: true,
-          msg: `Place ${newStatus === 'approved' ? 'approved' : 'rejected'} successfully.`,
+          msg: `Place ${nextStatus === 'approved' ? 'approved' : 'rejected'} successfully.`,
         })
-        setTimeout(() => window.location.reload(), 900)
       } else {
         const err = await res.json().catch(() => ({}))
         setFeedback({ ok: false, msg: (err?.message as string) ?? `Error ${res.status}` })

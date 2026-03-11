@@ -12,7 +12,8 @@ export default function ReviewCell({ rowData }: DefaultCellComponentProps) {
   const handleAction = async (newStatus: 'approved' | 'rejected', e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    if (!id || loading || current === newStatus) return
+    if (!id || loading || current === 'approved' || current === newStatus) return
+
     setLoading(true)
     try {
       const res = await fetch(`/api/places/${id}`, {
@@ -21,7 +22,11 @@ export default function ReviewCell({ rowData }: DefaultCellComponentProps) {
         credentials: 'include',
         body: JSON.stringify({ status: newStatus }),
       })
-      if (res.ok) setCurrent(newStatus)
+
+      if (res.ok) {
+        const updated = (await res.json().catch(() => ({}))) as { status?: string }
+        setCurrent(updated.status ?? newStatus)
+      }
     } finally {
       setLoading(false)
     }
