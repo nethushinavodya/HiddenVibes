@@ -14,9 +14,12 @@ function normalizeComment(doc: Comment) {
 }
 
 // GET /api/places/[id]/comments
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const payload = await getPayload({ config })
+  const { searchParams } = new URL(req.url)
+  const limit = parseInt(searchParams.get('limit') ?? '200', 10)
+  const depth = parseInt(searchParams.get('depth') ?? '1', 10)
 
   const result = await payload.find({
     collection: 'comments',
@@ -28,12 +31,12 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       ],
     },
     sort: 'createdAt',
-    limit: 200,
-    depth: 1,
+    limit,
+    depth,
   })
 
   return NextResponse.json({
-    docs: result.docs.map(normalizeComment),
+    docs: limit === 0 ? [] : result.docs.map(normalizeComment),
     total: result.totalDocs,
   })
 }

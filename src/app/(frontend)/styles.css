@@ -3116,6 +3116,22 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .hv-modal__comment-user {
   font-weight: 700;
 }
+.hv-modal__author-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 5px;
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: #e8f5e9;
+  color: #2d6a4f;
+  border: 1px solid #a5d6a7;
+  vertical-align: middle;
+  line-height: 1.6;
+  user-select: none;
+}
 .hv-modal__comment-text {
   font-weight: 400;
 }
