@@ -26,7 +26,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     where: {
       and: [
         { place: { equals: id } },
-        // only top-level comments (no parentComment set)
         { parentComment: { exists: false } },
       ],
     },
@@ -35,10 +34,22 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     depth,
   })
 
-  return NextResponse.json({
-    docs: limit === 0 ? [] : result.docs.map(normalizeComment),
-    total: result.totalDocs,
-  })
+  if (limit === 0) {
+    return NextResponse.json({ docs: [], total: result.totalDocs })
+  }
+
+  // Fetch reply counts for all top-level comments in parallel (single round-trip per comment, all concurrent)
+  const docs = await Promise.all(
+    result.docs.map(async (doc) => {
+      const replyResult = await payload.count({
+        collection: 'comments',
+        where: { parentComment: { equals: doc.id } },
+      })
+      return { ...normalizeComment(doc as Comment), replyCount: replyResult.totalDocs }
+    }),
+  )
+
+  return NextResponse.json({ docs, total: result.totalDocs })
 }
 
 // POST /api/places/[id]/comments

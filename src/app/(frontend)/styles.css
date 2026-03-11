@@ -3020,6 +3020,45 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   flex-shrink: 0;
 }
 
+/* ── Follow button in modal header ── */
+.hv-modal__follow-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0.3rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1.5px solid var(--hv-emerald, #2d9653);
+  color: var(--hv-emerald, #2d9653);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  flex-shrink: 0;
+  min-width: 68px;
+  white-space: nowrap;
+}
+.hv-modal__follow-btn:hover:not(:disabled) {
+  background: var(--hv-emerald, #2d9653);
+  color: #fff;
+}
+.hv-modal__follow-btn--following {
+  background: var(--hv-emerald, #2d9653);
+  color: #fff;
+  border-color: var(--hv-emerald, #2d9653);
+}
+.hv-modal__follow-btn--following:hover:not(:disabled) {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  color: #fff;
+}
+.hv-modal__follow-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 /* Details */
 .hv-modal__details {
   padding: 14px 16px;
