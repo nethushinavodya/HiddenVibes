@@ -1,4 +1,4 @@
-﻿﻿@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -2664,6 +2664,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .hv-explore-pill:hover {
   border-color: var(--hv-emerald);
   color: var(--hv-emerald);
+  background: var(--hv-bright);
 }
 .hv-explore-pill.active {
   background: var(--hv-emerald);
@@ -3093,7 +3094,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .hv-modal__time {
   font-size: 0.72rem;
   color: #8e8e8e;
-  text-transform: uppercase;
+  text-transform: lowercase !important;
   letter-spacing: 0.05em;
 }
 
