@@ -15,7 +15,7 @@ export default function Footer() {
             </span>
           </Link>
           <p className="hv-footer-tagline">
-            Discover Sri Lanka's best-kept secrets — hidden waterfalls, forgotten temples, and
+            Discover Sri Lanka&apos;s best-kept secrets — hidden waterfalls, forgotten temples, and
             untouched beaches waiting for the curious traveller.
           </p>
           <span className="hv-footer-badge">🇱🇰 Made for Sri Lanka</span>
