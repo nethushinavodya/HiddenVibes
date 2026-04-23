@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Batch 3: if user exists, fetch their likes for these places
-  let userLikesMap: Record<string, boolean> = {}
+  const userLikesMap: Record<string, boolean> = {}
   if (user) {
     const userLikesRes = await payload.find({
       collection: 'post-likes',
