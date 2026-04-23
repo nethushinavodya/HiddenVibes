@@ -13,26 +13,30 @@ async function getFeaturedPlaces(): Promise<Place[]> {
       collection: 'places',
       where: { status: { equals: 'approved' } },
       sort: '-createdAt',
-      limit: 100,
+      limit: 30,
       depth: 0,
     })
 
     const places = result.docs
     if (!places.length) return []
 
-    // Count likes for each place concurrently
-    const counts = await Promise.all(
-      places.map(async (p) => {
-        const c = await payload.count({
-          collection: 'post-likes',
-          where: { place: { equals: p.id } },
-        })
-        return { id: p.id, likes: c.totalDocs }
-      }),
-    )
+    // Fetch all likes for the candidate places with a single query and build a counts map.
+    // NOTE: we use a large limit here to capture likes across the candidate set.
+    const likeResult = await payload.find({
+      collection: 'post-likes',
+      where: { place: { in: places.map((p) => p.id) } },
+      depth: 0,
+      limit: 10000,
+    })
 
+    const likeDocs = likeResult.docs ?? []
     const likesMap: Record<string, number> = {}
-    for (const c of counts) likesMap[c.id] = c.likes
+    for (const l of likeDocs) {
+      // `place` may be returned as an id or as a relationship object depending on depth
+      const pid = typeof l.place === 'object' ? (l.place?.id ?? '') : (l.place as string)
+      if (!pid) continue
+      likesMap[pid] = (likesMap[pid] ?? 0) + 1
+    }
 
     // Attach likes, sort by likes desc, take top 3
     return places

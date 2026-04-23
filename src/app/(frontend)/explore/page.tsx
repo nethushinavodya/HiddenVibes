@@ -117,9 +117,8 @@ export default function ExplorePage() {
     setLoading(true)
     setError('')
     try {
-      // Load a smaller initial page (50) to reduce payload & speed up card rendering.
       const res = await fetch(
-        `/api/places?where[status][equals]=approved&sort=-createdAt&limit=50&depth=1`,
+        `/api/places?where[status][equals]=approved&sort=-createdAt&limit=30&depth=1`,
         { credentials: 'include' },
       )
       const data = await res.json()
