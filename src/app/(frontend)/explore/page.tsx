@@ -65,6 +65,36 @@ export default function ExplorePage() {
 
   const [activePlace, setActivePlace] = useState<PlacePost | null>(null)
 
+  // New: when the page loads, check for ?open=<id> and open that place
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const openId = params.get('open')
+    if (!openId) return
+
+    // Fetch single place via API and open modal
+    ;(async () => {
+      try {
+        const res = await fetch(`/api/places/${openId}`, { credentials: 'include' })
+        if (!res.ok) {
+          // remove the param anyway to avoid infinite attempts
+          params.delete('open')
+          const url = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}`
+          window.history.replaceState({}, '', url)
+          return
+        }
+        const place: PlacePost = await res.json()
+        // Ensure likes/comment defaults match what PostModal expects
+        setActivePlace({ ...place, likes: place.likes ?? 0, commentCount: place.commentCount ?? 0, liked: place.liked ?? false })
+      } catch (_e) {
+        // ignore failures; remove query param
+      } finally {
+        params.delete('open')
+        const url = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}`
+        window.history.replaceState({}, '', url)
+      }
+    })()
+  }, [])
+
   // Keep card hover stats in sync after a like toggle inside the modal
   const handleLikeUpdate = useCallback((placeId: string, liked: boolean, likes: number) => {
     setPlaces((prev) =>
@@ -87,8 +117,9 @@ export default function ExplorePage() {
     setLoading(true)
     setError('')
     try {
+      // Load a smaller initial page (50) to reduce payload & speed up card rendering.
       const res = await fetch(
-        `/api/places?where[status][equals]=approved&sort=-createdAt&limit=100&depth=1`,
+        `/api/places?where[status][equals]=approved&sort=-createdAt&limit=50&depth=1`,
         { credentials: 'include' },
       )
       const data = await res.json()

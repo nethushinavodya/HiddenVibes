@@ -8,14 +8,37 @@ import type { Place } from '@/payload-types'
 async function getFeaturedPlaces(): Promise<Place[]> {
   try {
     const payload = await getPayload({ config })
+    // Fetch a reasonable number of approved places to evaluate popularity
     const result = await payload.find({
       collection: 'places',
       where: { status: { equals: 'approved' } },
       sort: '-createdAt',
-      limit: 6,
+      limit: 100,
       depth: 0,
     })
-    return result.docs
+
+    const places = result.docs
+    if (!places.length) return []
+
+    // Count likes for each place concurrently
+    const counts = await Promise.all(
+      places.map(async (p) => {
+        const c = await payload.count({
+          collection: 'post-likes',
+          where: { place: { equals: p.id } },
+        })
+        return { id: p.id, likes: c.totalDocs }
+      }),
+    )
+
+    const likesMap: Record<string, number> = {}
+    for (const c of counts) likesMap[c.id] = c.likes
+
+    // Attach likes, sort by likes desc, take top 3
+    return places
+      .map((p) => ({ ...p, likes: likesMap[p.id] ?? 0 }))
+      .sort((a, b) => (b.likes ?? 0) - (a.likes ?? 0))
+      .slice(0, 3)
   } catch {
     return []
   }
@@ -86,7 +109,7 @@ export default async function FeaturedPlaces() {
               return (
                 <Link
                   key={place.id}
-                  href={`/explore`}
+                  href={`/explore?open=${place.id}`}
                   className="hv-place-card"
                   style={{ textDecoration: 'none' }}
                 >
