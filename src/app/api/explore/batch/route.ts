@@ -17,56 +17,69 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({})
   }
 
-  // Run all DB queries concurrently — one count per place for likes + comments
-  const results = await Promise.all(
-    placeIds.map(async (placeId) => {
-      const [likesResult, commentsResult, userLikeResult] = await Promise.all([
-        // Total like count
-        payload.count({
-          collection: 'post-likes',
-          where: { place: { equals: placeId } },
-        }),
-        // Total top-level comment count
-        payload.count({
-          collection: 'comments',
-          where: {
-            and: [
-              { place: { equals: placeId } },
-              { parentComment: { exists: false } },
-            ],
-          },
-        }),
-        // Whether the current user liked this place
-        user
-          ? payload.find({
-              collection: 'post-likes',
-              where: {
-                and: [
-                  { place: { equals: placeId } },
-                  { user: { equals: user.id } },
-                ],
-              },
-              limit: 1,
-              depth: 0,
-            })
-          : Promise.resolve(null),
-      ])
+  // Batch 1: fetch all likes for these places
+  const likesRes = await payload.find({
+    collection: 'post-likes',
+    where: { place: { in: placeIds } },
+    depth: 0,
+    limit: 10000,
+  })
+  const likeDocs = likesRes.docs ?? []
+  const likesMap: Record<string, number> = {}
+  for (const l of likeDocs) {
+    const pid = typeof l.place === 'object' ? (l.place?.id ?? '') : (l.place as string)
+    if (!pid) continue
+    likesMap[pid] = (likesMap[pid] ?? 0) + 1
+  }
 
-      return {
-        placeId,
-        likes: likesResult.totalDocs,
-        commentCount: commentsResult.totalDocs,
-        liked: userLikeResult ? userLikeResult.totalDocs > 0 : false,
-      }
-    }),
-  )
+  // Batch 2: fetch top-level comments for these places
+  const commentsRes = await payload.find({
+    collection: 'comments',
+    where: {
+      and: [
+        { place: { in: placeIds } },
+        { parentComment: { exists: false } },
+      ],
+    },
+    depth: 0,
+    limit: 10000,
+  })
+  const commentDocs = commentsRes.docs ?? []
+  const commentsMap: Record<string, number> = {}
+  for (const c of commentDocs) {
+    const pid = typeof c.place === 'object' ? (c.place?.id ?? '') : (c.place as string)
+    if (!pid) continue
+    commentsMap[pid] = (commentsMap[pid] ?? 0) + 1
+  }
 
-  // Shape into a map keyed by placeId for O(1) lookup on the client
+  // Batch 3: if user exists, fetch their likes for these places
+  let userLikesMap: Record<string, boolean> = {}
+  if (user) {
+    const userLikesRes = await payload.find({
+      collection: 'post-likes',
+      where: {
+        and: [{ place: { in: placeIds } }, { user: { equals: user.id } }],
+      },
+      depth: 0,
+      limit: 10000,
+    })
+    const userLikeDocs = userLikesRes.docs ?? []
+    for (const ul of userLikeDocs) {
+      const pid = typeof ul.place === 'object' ? (ul.place?.id ?? '') : (ul.place as string)
+      if (!pid) continue
+      userLikesMap[pid] = true
+    }
+  }
+
+  // Build response map
   const map: Record<string, { likes: number; commentCount: number; liked: boolean }> = {}
-  for (const r of results) {
-    map[r.placeId] = { likes: r.likes, commentCount: r.commentCount, liked: r.liked }
+  for (const pid of placeIds) {
+    map[pid] = {
+      likes: likesMap[pid] ?? 0,
+      commentCount: commentsMap[pid] ?? 0,
+      liked: userLikesMap[pid] ?? false,
+    }
   }
 
   return NextResponse.json(map)
 }
-
