@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Heart, MessageCircle, Play } from 'lucide-react'
+import normalizeLocation from '@/utils/normalizeLocation'
 
 export interface MediaFile {
   url: string
@@ -52,6 +53,7 @@ export default function PlaceCard({ place, onClick }: PlaceCardProps) {
   const firstMedia = place.mediaFiles?.[0]
   const hasMultiple = (place.mediaFiles?.length ?? 0) > 1
   const isVideo = firstMedia?.resourceType === 'video'
+  const { district, city, formatted } = normalizeLocation(place)
 
   return (
     <div
@@ -117,6 +119,11 @@ export default function PlaceCard({ place, onClick }: PlaceCardProps) {
             <Play className="w-4 h-4 fill-white text-white" />
           </div>
         )}
+      </div>
+
+      {/* Content footer with location (desktop uses overlay elsewhere) */}
+      <div className="hv-place-card__meta">
+        {formatted ? <div className="hv-place-card__location">{formatted}</div> : null}
       </div>
     </div>
   )

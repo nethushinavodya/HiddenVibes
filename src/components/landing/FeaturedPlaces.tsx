@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import type { Place } from '@/payload-types'
+import normalizeLocation from '@/utils/normalizeLocation'
 
 // ── Fetch latest 6 approved places from DB ───────────────────────────────────
 
@@ -150,10 +151,15 @@ export default async function FeaturedPlaces() {
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                         <circle cx="12" cy="10" r="3" />
                       </svg>
-                      {place.district} District
-                      {place.city && (
-                        <span className="hv-place-card-city">· {place.city}</span>
-                      )}
+                      {(() => {
+                        const { district, city } = normalizeLocation(place)
+                        return (
+                          <>
+                            {district ? `${district} District` : 'Unknown district'}
+                            {city ? <span className="hv-place-card-city">· {city}</span> : null}
+                          </>
+                        )
+                      })()}
                     </div>
                     <h3 className="hv-place-card-title">{place.title}</h3>
                     <p className="hv-place-card-desc">

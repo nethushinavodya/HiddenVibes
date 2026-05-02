@@ -7,10 +7,12 @@ import { useAuth } from '@/context/AuthContext'
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
   const { user, logout } = useAuth()
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -29,9 +31,23 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target as Node)) {
+        // Don't close if clicking the hamburger button
+        if ((e.target as HTMLElement).closest('.hv-nav-hamburger')) return
+        setMobileMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
   const handleLogout = async () => {
     await logout()
     setDropdownOpen(false)
+    setMobileMenuOpen(false)
     router.push('/')
   }
 
@@ -133,11 +149,111 @@ export default function Navbar() {
               </Link>
             </>
           )}
-          <button className="hv-nav-hamburger" aria-label="Open menu">
+          <button 
+            className="hv-nav-hamburger"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Open menu"
+            aria-expanded={mobileMenuOpen}
+          >
             <span />
             <span />
             <span />
           </button>
+        </div>
+      </div>
+
+      {/* Mobile overlay and drawer */}
+      {mobileMenuOpen && (
+        <div 
+          className="hv-nav-mobile-overlay"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+      <div 
+        className={`hv-nav-mobile-drawer${mobileMenuOpen ? ' hv-nav-mobile-drawer--open' : ''}`}
+        ref={mobileMenuRef}
+      >
+        {/* Mobile nav links */}
+        <div className="hv-nav-mobile-links">
+          <Link 
+            href="/" 
+            className={`hv-nav-link${pathname === '/' ? ' hv-nav-link--active' : ''}`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Home
+          </Link>
+          <Link 
+            href="/about" 
+            className={`hv-nav-link${pathname === '/about' ? ' hv-nav-link--active' : ''}`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            About
+          </Link>
+          <Link 
+            href="/explore" 
+            className={`hv-nav-link${pathname === '/explore' ? ' hv-nav-link--active' : ''}`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Explore Places
+          </Link>
+          <Link 
+            href="/add-place" 
+            className={`hv-nav-link${pathname === '/add-place' ? ' hv-nav-link--active' : ''}`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            + Add Place
+          </Link>
+        </div>
+
+        {/* Mobile user actions */}
+        <div className="hv-nav-mobile-actions">
+          {user ? (
+            <>
+              <div className="hv-nav-mobile-profile">
+                <span className="hv-nav-user-avatar">
+                  {(user.firstName ?? user.email).charAt(0).toUpperCase()}
+                </span>
+                <span>{user.firstName ?? user.email}</span>
+              </div>
+              <Link 
+                href="/profile" 
+                className="hv-nav-dropdown-item"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                My Profile
+              </Link>
+              <Link 
+                href="/my-submissions" 
+                className="hv-nav-dropdown-item"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                My Submissions
+              </Link>
+              <button
+                className="hv-nav-mobile-signout"
+                onClick={handleLogout}
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link 
+                href="/login" 
+                className="hv-btn-signin--mobile"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Sign In
+              </Link>
+              <Link 
+                href="/register" 
+                className="hv-btn-signin--mobile"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Register
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

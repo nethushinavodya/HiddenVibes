@@ -21,6 +21,7 @@ import {
   CornerDownRight,
 } from 'lucide-react'
 import type { PlacePost, MediaFile } from './PlaceCard'
+import normalizeLocation from '@/utils/normalizeLocation'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -543,7 +544,10 @@ export default function PostModal({ place, onClose, currentUserId, onLikeUpdate,
               <span className="hv-modal__username">{submitterName}</span>
               <span className="hv-modal__location">
                 <MapPin className="w-3 h-3 inline mr-0.5" />
-                {[place.city, place.district].filter(Boolean).join(', ') || place.title}
+                {(() => {
+                  const { district, city, formatted } = normalizeLocation(place)
+                  return formatted || place.title
+                })()}
               </span>
             </div>
             {/* Follow button — hidden for own posts or when not logged in */}
@@ -577,7 +581,7 @@ export default function PostModal({ place, onClose, currentUserId, onLikeUpdate,
                 <span className="hv-modal__tag"><DollarSign className="w-3 h-3" />{entryFeeLabel[place.entryFee] ?? place.entryFee}</span>
               )}
               {typeof place.submittedBy === 'object' && place.submittedBy?.district && (
-                <span className="hv-modal__tag"><MapPin className="w-3 h-3" />{place.submittedBy.district}</span>
+                <span className="hv-modal__tag"><MapPin className="w-3 h-3" />{normalizeLocation(place).district ?? place.submittedBy.district}</span>
               )}
             </div>
             <p className="hv-modal__time">{timeAgo(place.createdAt)}</p>
